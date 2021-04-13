@@ -1,5 +1,5 @@
 # 第三周lab实验笔记
-本次实验共五个任务，前三个在ctaget上，4和5在rtarget上。
+本次实验共五个任务，前三个在ctaget上，4和5在rtarget上。 
 一开始看这个实验一脸懵逼，看的官网的writewp大体明白了这个实验是个啥子意思
 
 ## phase_1
@@ -71,3 +71,34 @@ fa 97 b9 59 00 00 00 00 ec 17 40 00 00 00 00 00
 ```
 完成phase_2
 ![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image2.png)
+
+
+
+## phase_3
+touch3的源码
+```
+1 /* Compare string to hex represention of unsigned value */
+2 int hexmatch(unsigned val, char *sval)
+3 {
+4 char cbuf[110];
+5 /* Make position of check string unpredictable */
+6 char *s = cbuf + random() % 100;
+7 sprintf(s, "%.8x", val);
+8 return strncmp(sval, s, 9) == 0;
+9 }
+10
+11 void touch3(char *sval)
+12 {
+13 vlevel = 3; /* Part of validation protocol */
+14 if (hexmatch(cookie, sval)) {
+15 printf("Touch3!: You called touch3(\"%s\")\n", sval);
+16 validate(3);
+17 } else {
+18 printf("Misfire: You called touch3(\"%s\")\n", sval);
+19 fail(3);
+20 }
+21 exit(0);
+22 }
+```
+发现其调用了hexmathch函数
+
