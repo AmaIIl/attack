@@ -39,3 +39,4 @@ $1 = {void ()} 0x4017c0 <touch1>
 ```
 前面这些a的十六进制表示我是拿010生成的，后面再手动补上小端存储的touch1地址
 然后执行程序完成本次实验
+![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image1.png)
